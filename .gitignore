@@ -1,0 +1,11 @@
+.env
+backend/target/
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+*.dump
+.idea/
+
+.tracker-build-ca.pem
+.env.verify

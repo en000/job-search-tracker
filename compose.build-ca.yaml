@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      secrets:
+        - build_ca
+secrets:
+  build_ca:
+    file: ${TRACKER_BUILD_CA_FILE:?Set TRACKER_BUILD_CA_FILE to a trusted PEM certificate}
