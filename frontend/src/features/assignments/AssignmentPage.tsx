@@ -33,11 +33,10 @@ function AssignmentForm({ assignment, roleId, timeZone }: { assignment?: Assignm
       status: formText(form, 'status') as AssignmentFields['status'],
       receivedOn: nullableText(form, 'receivedOn'),
       dueOn: nullableText(form, 'dueOn'),
-      brief: nullableText(form, 'brief'),
-      briefUrl: nullableText(form, 'briefUrl'),
+      instructions: nullableText(form, 'instructions'),
+      instructionsUrl: nullableText(form, 'instructionsUrl'),
       workUrl: nullableText(form, 'workUrl'),
-      submissionUrl: nullableText(form, 'submissionUrl'),
-      workNotes: nullableText(form, 'workNotes'),
+      notes: nullableText(form, 'notes'),
       feedback: nullableText(form, 'feedback'),
       submittedAt: time.local === initialTime(original, zone).local && !time.offset ? null : submittedAt,
     }, { onSuccess: () => navigate(rolePath, { state }) });
@@ -53,11 +52,10 @@ function AssignmentForm({ assignment, roleId, timeZone }: { assignment?: Assignm
         <div><dt>Status</dt><dd>{label(assignment.status)}</dd></div>
         <div><dt>Received</dt><dd>{assignment.receivedOn ? formatDate(assignment.receivedOn) : '—'}</dd></div>
         <div><dt>Due date</dt><dd>{assignment.dueOn ? formatDate(assignment.dueOn) : '—'}</dd></div>
-        <div><dt>Instructions</dt><dd>{assignment.brief ?? '—'}</dd></div>
-        <div><dt>Brief URL</dt><dd>{assignment.briefUrl ?? '—'}</dd></div>
-        <div><dt>Work URL</dt><dd>{assignment.workUrl ?? '—'}</dd></div>
-        <div><dt>Work notes</dt><dd>{assignment.workNotes ?? '—'}</dd></div>
-        <div><dt>Submission URL</dt><dd>{assignment.submissionUrl ?? '—'}</dd></div>
+        <div><dt>Instructions</dt><dd>{assignment.instructions ?? '—'}</dd></div>
+        <div><dt>Instructions link</dt><dd>{assignment.instructionsUrl ?? '—'}</dd></div>
+        <div><dt>Work link</dt><dd>{assignment.workUrl ?? '—'}</dd></div>
+        <div><dt>Notes</dt><dd>{assignment.notes ?? '—'}</dd></div>
         <div><dt>Submission time</dt><dd>{assignment.submittedAt ? formatInstant(assignment.submittedAt, zone) : '—'}</dd></div>
         <div><dt>Feedback</dt><dd>{assignment.feedback ?? '—'}</dd></div>
       </dl>
@@ -71,20 +69,19 @@ function AssignmentForm({ assignment, roleId, timeZone }: { assignment?: Assignm
       </div>
     </section>
     <section className="surface panel form-stack">
-      <h2>Brief and work</h2>
-      <TextArea label="Instructions" name="brief" defaultValue={assignment?.brief} error={error} />
+      <h2>Instructions and work</h2>
+      <TextArea label="Instructions" name="instructions" hint="What the company asked you to build." defaultValue={assignment?.instructions} error={error} />
       <div className="form-grid">
-        <Field label="Brief URL" name="briefUrl" type="url" maxLength={2048} defaultValue={assignment?.briefUrl ?? ''} error={error} />
-        <Field label="Work URL" name="workUrl" type="url" maxLength={2048} defaultValue={assignment?.workUrl ?? ''} error={error} />
+        <Field label="Instructions link" name="instructionsUrl" hint="Original assignment document or task page." type="url" maxLength={2048} defaultValue={assignment?.instructionsUrl ?? ''} error={error} />
+        <Field label="Work link" name="workUrl" hint="Your repository, demo, or submitted solution." type="url" maxLength={2048} defaultValue={assignment?.workUrl ?? ''} error={error} />
       </div>
-      <TextArea label="Work notes" name="workNotes" defaultValue={assignment?.workNotes} error={error} />
+      <TextArea label="Notes" name="notes" hint="Your approach, progress, and reminders." defaultValue={assignment?.notes} error={error} />
     </section>
     <section className="surface panel form-stack">
       <h2>Submission and feedback</h2>
       <div className="form-grid">
         <LocalTimeField label="Submission time" name="submittedAt" draft={time} setDraft={setTime} zone={zone} original={original}
           error={error} />
-        <Field label="Submission URL" name="submissionUrl" type="url" maxLength={2048} defaultValue={assignment?.submissionUrl ?? ''} error={error} />
       </div>
       <TextArea label="Feedback" name="feedback" defaultValue={assignment?.feedback} error={error} />
     </section>
@@ -108,7 +105,7 @@ export function AssignmentPage() {
     {!role.data || !settings.data || (assignmentId && !record.data) ?
       <LoadState error={role.error ?? settings.error ?? record.error} retry={() => {
         void role.refetch(); void settings.refetch(); if (assignmentId) void record.refetch();
-      }} /> : !assignmentId && role.data.stage === 'COMPLETED' ?
+      }} /> : !assignmentId && role.data.status === 'COMPLETED' ?
         <p className="surface empty">Reopen this role to add an assignment.</p> :
         <AssignmentForm key={roleId + (assignmentId ?? '')} roleId={roleId} assignment={record.data} timeZone={settings.data.timeZone} />}
   </>;

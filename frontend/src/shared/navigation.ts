@@ -1,7 +1,7 @@
-import type { Substage } from './types';
+import type { Stage } from './types';
 
 export type ReturnState = { rolesUrl?: string; rolesScroll?: number };
-export type InterviewStageSuggestion = { substage: Substage | null };
+export type InterviewStageSuggestion = { stage: Stage | null };
 export type RoleNavigationState = ReturnState & { interviewStageSuggestion?: InterviewStageSuggestion };
 
 export function returnState(state: unknown): ReturnState {

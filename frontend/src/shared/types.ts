@@ -1,8 +1,8 @@
-export const stageCodes = ['SAVED', 'APPLIED', 'IN_PROGRESS', 'COMPLETED'] as const;
-export type Stage = typeof stageCodes[number];
+export const statusCodes = ['SAVED', 'APPLIED', 'IN_PROGRESS', 'COMPLETED'] as const;
+export type RoleStatus = typeof statusCodes[number];
 
-export const substageCodes = ['INTERVIEW_SCHEDULED', 'FIRST_INTERVIEW_PASSED', 'AWAITING_INTERVIEW_FEEDBACK', 'ASSIGNMENT_PENDING', 'ASSIGNMENT_SUBMITTED', 'FINAL_INTERVIEW', 'OFFER_RECEIVED'] as const;
-export type Substage = typeof substageCodes[number];
+export const stageCodes = ['INTERVIEW_SCHEDULED', 'FIRST_INTERVIEW_PASSED', 'AWAITING_INTERVIEW_FEEDBACK', 'ASSIGNMENT_PENDING', 'ASSIGNMENT_SUBMITTED', 'FINAL_INTERVIEW', 'OFFER_RECEIVED'] as const;
+export type Stage = typeof stageCodes[number];
 
 export const outcomeCodes = ['ACCEPTED', 'REJECTED', 'WITHDRAWN', 'NO_RESPONSE'] as const;
 export type Outcome = typeof outcomeCodes[number];
@@ -22,8 +22,8 @@ export type EventKind = typeof eventKindCodes[number];
 export const todayKindCodes = ['FOLLOW_UP', 'ASSIGNMENT', 'SCHEDULED_INTERVIEW', 'PLANNED_INTERVIEW', 'RECORD_INTERVIEW_OUTCOME'] as const;
 export type TodayKind = typeof todayKindCodes[number];
 
-export const activeStages = ['SAVED', 'APPLIED', 'IN_PROGRESS'] as const;
-export const substages: Partial<Record<Stage, readonly Substage[]>> = {
+export const activeStatuses = ['SAVED', 'APPLIED', 'IN_PROGRESS'] as const;
+export const stagesByStatus: Partial<Record<RoleStatus, readonly Stage[]>> = {
   IN_PROGRESS: ['INTERVIEW_SCHEDULED', 'FIRST_INTERVIEW_PASSED', 'AWAITING_INTERVIEW_FEEDBACK',
     'ASSIGNMENT_PENDING', 'ASSIGNMENT_SUBMITTED', 'FINAL_INTERVIEW', 'OFFER_RECEIVED'],
 };
@@ -41,10 +41,8 @@ export type RoleFields = {
 };
 export type Role = RoleFields & {
   id: string;
-  stage: Stage;
-  substage: Substage | null;
-  previousStage: Stage | null;
-  previousSubstage: Substage | null;
+  status: RoleStatus;
+  stage: Stage | null;
   outcome: Outcome | null;
   completedAt: string | null;
   followUp: FollowUp | null;
@@ -61,7 +59,7 @@ export type NextItem = {
   dueOn: string | null;
   startsAt: string | null;
 };
-export type RoleSummary = Pick<Role, 'id' | 'company' | 'title' | 'stage' | 'substage' | 'outcome' | 'lastActivityAt'> & {
+export type RoleSummary = Pick<Role, 'id' | 'company' | 'title' | 'status' | 'stage' | 'outcome' | 'lastActivityAt'> & {
   nextScheduledItem: NextItem | null;
 };
 export type Participant = { id?: string; name: string; jobTitle: string | null; email: string | null };
@@ -86,11 +84,10 @@ export type AssignmentFields = {
   status: AssignmentStatus;
   receivedOn: string | null;
   dueOn: string | null;
-  brief: string | null;
-  briefUrl: string | null;
+  instructions: string | null;
+  instructionsUrl: string | null;
   workUrl: string | null;
-  submissionUrl: string | null;
-  workNotes: string | null;
+  notes: string | null;
   feedback: string | null;
   submittedAt: string | null;
 };
@@ -126,4 +123,5 @@ export type Today = {
   unscheduled: TodayItem[];
   completionSuggestions: CompletionSuggestion[];
 };
-export type Settings = { timeZone: string };
+export type Theme = 'LIGHT' | 'DARK';
+export type Settings = { timeZone: string; theme: Theme };

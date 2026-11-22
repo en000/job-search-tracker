@@ -1,7 +1,7 @@
 const names: Record<string, string> = {
   HR_RECRUITER: 'HR / recruiter screen',
   ROLE_CREATED: 'Role added',
-  ROLE_STAGE_CHANGED: 'Stage changed',
+  ROLE_STAGE_CHANGED: 'Progress changed',
   ROLE_COMPLETED: 'Role completed',
   ROLE_REOPENED: 'Role reopened',
   FOLLOW_UP: 'Follow-up',

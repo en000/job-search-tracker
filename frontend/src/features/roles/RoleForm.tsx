@@ -4,7 +4,7 @@ import { send, useWrite } from '../../shared/api';
 import type { Role, RoleFields } from '../../shared/types';
 import { Field, formText, nullableText, PageHeading, SelectField, TextArea, VersionReview, WriteError } from '../../shared/ui';
 
-const startStages = ['SAVED', 'APPLIED'] as const;
+const startStatuses = ['SAVED', 'APPLIED'] as const;
 
 function readRole(form: FormData): RoleFields {
   return {
@@ -30,7 +30,7 @@ export function RoleForm({ role, onClose }: { role?: Role; onClose?: () => void 
     const form = new FormData(event.currentTarget);
     const details = readRole(form);
     write.mutate(role ? { ...details, expectedVersion: expected } : {
-      ...details, stage: formText(form, 'stage'),
+      ...details, status: formText(form, 'status'),
     }, { onSuccess: (saved) => role ? onClose?.() : navigate('/roles/' + saved.id, { replace: true }) });
   }
 
@@ -46,7 +46,7 @@ export function RoleForm({ role, onClose }: { role?: Role; onClose?: () => void 
       <Field label="Role title" name="title" required maxLength={200} defaultValue={role?.title} error={error} />
     </div>
     {!role && <div className="form-grid">
-      <SelectField label="Starting stage" name="stage" options={startStages} defaultValue="SAVED" error={error} />
+      <SelectField label="Starting status" name="status" options={startStatuses} defaultValue="SAVED" error={error} />
     </div>}
     <Field label="Posting URL" name="postingUrl" type="url" maxLength={2048} defaultValue={role?.postingUrl ?? ''} error={error} />
     <div className="form-grid">

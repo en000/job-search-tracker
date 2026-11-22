@@ -1,6 +1,6 @@
 # Job Search Tracker
 
-A local job search tracker for one person. Track applications, interviews, assignments, and follow-ups in a single PostgreSQL workspace. The app opens directly to Today.
+A local job search tracker for one person. Track applications, interviews, assignments, and follow-ups in PostgreSQL. The app opens directly to Today.
 
 ## Quick start
 
@@ -20,18 +20,18 @@ Open [Today](http://localhost:8080). The app and API share that address. Docker 
 
 ## Use the tracker
 
-1. Select **Add role** and start it in **Saved** or **Applied**. Open it from **Roles** to update its stage, record activity, or manage follow-ups, interviews, and assignments.
-2. Add interviews from the role’s **Interviews** section. The optional round number is the interview’s position in that role’s hiring process. Saving an interview can suggest a stage change. Choose **Move stage** to apply it or **Keep current stage** to skip it.
+1. Select **Add role** and start it in **Saved** or **Applied**. Open it from **Roles** to update its status and stage, record activity, or manage follow-ups, interviews, and assignments.
+2. Add interviews from the role’s **Interviews** section. The optional round number is the interview’s position in that role’s hiring process. Saving an interview can suggest a progress change. Choose **Update progress** to apply it or **Keep current progress** to skip it.
 3. Give each assignment a due date. Open assignments appear in **Overdue**, **Due today**, or **Upcoming**. **To do** holds planned interviews, follow-ups without a due date, and any older open assignments that still need a date.
-4. After 14 days at the same stage and substage, **Today** suggests **No response** for **Applied** and **In progress** roles. Review the suggestion, dismiss it for the current stage and substage, or choose **Remind me in 2 weeks**. Completing the role requires confirmation.
-5. Use **Settings** to change the time zone for interview times and Today’s date. Assignment and follow-up due dates stay on the calendar date you chose.
+4. After 14 days at the same status and stage, **Today** suggests **No response** for **Applied** and **In progress** roles. Review the suggestion, dismiss it for the current status and stage, or choose **Remind me in 2 weeks**. Completing the role requires confirmation.
+5. Use **Settings** to choose a light or dark theme and change the time zone for interview times and Today’s date. Assignment and follow-up due dates stay on the calendar date you chose.
 
-| Role stage | Options |
+| Role status | Stages or outcome |
 | --- | --- |
-| **Saved** | No substages |
-| **Applied** | No substages |
+| **Saved** | No stage |
+| **Applied** | No stage |
 | **In progress** | Interview scheduled, First interview passed, Awaiting interview feedback, Assignment pending, Assignment submitted, Final interview, Offer received |
-| **Completed** | Choose Accepted, Rejected, Withdrawn, or No response. Reopening restores the previous active stage and substage. |
+| **Completed** | Choose Accepted, Rejected, Withdrawn, or No response. Reopening resets the role to Saved. |
 
 ## Manage the local app
 
@@ -40,7 +40,7 @@ docker compose ps
 docker compose logs -f app
 ```
 
-Press Ctrl+C to stop following logs. Use `docker compose down` to stop both services and run the startup command again to resume your workspace. `docker compose down -v` removes the named PostgreSQL volume and permanently deletes the databases in it. The next startup seeds a fresh workspace.
+Press Ctrl+C to stop following logs. Use `docker compose down` to stop both services and run the startup command again to resume tracking. `docker compose down -v` removes the named PostgreSQL volume and permanently deletes the databases in it. The next startup starts with empty tracker data.
 
 If Docker builds report certificate errors on a network that inspects HTTPS, save the trusted local root CA as a PEM file and pass it as a build secret. The certificate is used by the dependency download stages.
 
@@ -53,7 +53,7 @@ On macOS or Linux, use `export TRACKER_BUILD_CA_FILE=/path/to/trusted-root.pem` 
 
 ## Backup and restore
 
-Use **Settings → Download JSON** for a portable snapshot of the workspace. Use a PostgreSQL dump when you want to restore a working database.
+Use **Settings → Download JSON** for a portable snapshot of your tracker data. Use a PostgreSQL dump when you want to restore a working database.
 
 Run these commands from the repository root with the database service running. The dump includes the schema, Flyway history, and data. Keep the resulting `tracker.dump` somewhere outside Docker's volume.
 
@@ -118,7 +118,7 @@ npm run build
 npm test
 ```
 
-Run Playwright against a packaged Compose instance. Use a separate Compose project so the browser flow writes only to a disposable workspace. Start Compose from the repository root. Stop any existing instance that uses port 8080 first.
+Run Playwright against a packaged Compose instance. Use a separate Compose project so the browser flow writes only to a disposable database. Start Compose from the repository root. Stop any existing instance that uses port 8080 first.
 
 ```sh
 docker compose -p jobtracker-e2e up --build -d --wait
@@ -128,7 +128,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-From the root, `docker compose -p jobtracker-e2e down` stops the test instance. Add `-v` when you want to discard that test workspace. Set `PLAYWRIGHT_BASE_URL` if you run the browser tests against a different local address configured for the API.
+From the root, `docker compose -p jobtracker-e2e down` stops the test instance. Add `-v` when you want to discard that test database. Set `PLAYWRIGHT_BASE_URL` if you run the browser tests against a different local address configured for the API.
 
 ## Project structure
 

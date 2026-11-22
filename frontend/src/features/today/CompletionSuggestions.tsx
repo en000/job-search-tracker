@@ -31,7 +31,7 @@ export function CompletionSuggestions({ suggestions }: { suggestions: Completion
     <div className="section-heading">
       <div>
         <h2 id="completion-suggestions-heading">Review inactive applications</h2>
-        <p className="muted">These applications have been at the same stage for at least 2 weeks. If you’re still waiting for a reply, consider closing them as No response.</p>
+        <p className="muted">These applications have been at the same status and stage for at least 2 weeks. If you’re still waiting for a reply, consider closing them as No response.</p>
       </div>
     </div>
     <ul className="work-list">

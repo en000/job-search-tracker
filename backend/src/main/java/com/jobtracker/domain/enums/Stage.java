@@ -1,0 +1,11 @@
+package com.jobtracker.domain.enums;
+
+public enum Stage {
+    INTERVIEW_SCHEDULED,
+    FIRST_INTERVIEW_PASSED,
+    AWAITING_INTERVIEW_FEEDBACK,
+    ASSIGNMENT_PENDING,
+    ASSIGNMENT_SUBMITTED,
+    FINAL_INTERVIEW,
+    OFFER_RECEIVED
+}

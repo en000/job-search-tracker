@@ -13,7 +13,7 @@ function describe(value: unknown): string {
   if (typeof value === 'string') return label(value);
   if (value && typeof value === 'object') {
     const state = value as Record<string, unknown>;
-    return [state.stage, state.substage, state.outcome].filter((part): part is string => typeof part === 'string')
+    return [state.status, state.stage, state.outcome].filter((part): part is string => typeof part === 'string')
       .map(label).join(' / ');
   }
   return '';

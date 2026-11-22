@@ -6,7 +6,7 @@ import { formatDate, formatInstant } from '../../shared/dates';
 import { label } from '../../shared/labels';
 import { returnState, type RoleNavigationState } from '../../shared/navigation';
 import { LoadState, PageHeading, Pill } from '../../shared/ui';
-import { FollowUpPanel, RoleStatus } from './RoleActions';
+import { FollowUpPanel, RoleProgress } from './RoleActions';
 import { RoleFacts, RoleForm } from './RoleForm';
 import { Timeline } from './Timeline';
 
@@ -37,7 +37,7 @@ export function RolePage() {
       rolesScroll: state.rolesUrl ? Number(sessionStorage.getItem('roles-scroll:' + rolesUrl) ?? 0) : 0,
     }}>← Roles</Link>
     <PageHeading title={role.title} caption={role.company} />
-    <RoleStatus key={role.id + ':' + reviewNoResponse} role={role} zone={zone} reviewNoResponse={reviewNoResponse}
+    <RoleProgress key={role.id + ':' + reviewNoResponse} role={role} zone={zone} reviewNoResponse={reviewNoResponse}
       interviewStageSuggestion={interviewStageSuggestion}
       onDismissInterviewSuggestion={() => navigate(rolePath + location.search, { replace: true, state })} />
     <div className="role-layout">
@@ -45,7 +45,7 @@ export function RolePage() {
       <div className="role-main">
         <section className="surface panel">
           <div className="section-heading"><h2>Interviews</h2>
-            {role.stage !== 'COMPLETED' && <Link className="button secondary small" state={state}
+            {role.status !== 'COMPLETED' && <Link className="button secondary small" state={state}
               to={rolePath + '/interviews/new'}>Add interview</Link>}</div>
           {!interviews.data ? <LoadState error={interviews.error} retry={interviews.refetch} /> :
             interviews.data.length === 0 ? <p className="muted">No interviews yet.</p> :
@@ -57,7 +57,7 @@ export function RolePage() {
         </section>
         <section className="surface panel">
           <div className="section-heading"><h2>Assignments</h2>
-            {role.stage !== 'COMPLETED' && <Link className="button secondary small" state={state}
+            {role.status !== 'COMPLETED' && <Link className="button secondary small" state={state}
               to={rolePath + '/assignments/new'}>Add assignment</Link>}</div>
           {!assignments.data ? <LoadState error={assignments.error} retry={assignments.refetch} /> :
             assignments.data.length === 0 ? <p className="muted">No assignments yet.</p> :

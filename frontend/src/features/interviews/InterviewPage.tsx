@@ -6,13 +6,13 @@ import { formatInstant } from '../../shared/dates';
 import { label } from '../../shared/labels';
 import { initialTime, instantValue, LocalTimeField } from '../../shared/LocalTimeField';
 import { returnState } from '../../shared/navigation';
-import type { Interview, InterviewFields, InterviewStatus, Participant, Substage } from '../../shared/types';
+import type { Interview, InterviewFields, InterviewStatus, Participant, Stage } from '../../shared/types';
 import { interviewStatusCodes, interviewTypeCodes } from '../../shared/types';
 import { Field, formText, LoadState, nullableText, PageHeading, SelectField, TextArea, VersionReview, WriteError } from '../../shared/ui';
 
 type PersonRow = Participant & { key: string };
 
-function suggestedSubstage(interview: Interview): Substage | null | undefined {
+function suggestedStage(interview: Interview): Stage | null | undefined {
   switch (interview.status) {
     case 'PLANNED': return null;
     case 'SCHEDULED': return interview.type === 'FINAL' ? 'FINAL_INTERVIEW' : 'INTERVIEW_SCHEDULED';
@@ -63,9 +63,9 @@ export function InterviewForm({ interview, roleId, timeZone }: { interview?: Int
         email: nullableText(form, 'participants[' + index + '].email'),
       })),
     }, { onSuccess: (saved) => {
-      const substage = suggestedSubstage(saved);
-      const interviewStageSuggestion = substage !== undefined && (!interview || suggestedSubstage(interview) !== substage)
-        ? { substage } : undefined;
+      const stage = suggestedStage(saved);
+      const interviewStageSuggestion = stage !== undefined && (!interview || suggestedStage(interview) !== stage)
+        ? { stage } : undefined;
       navigate(rolePath, { state: { ...state, interviewStageSuggestion } });
     } });
   }
@@ -157,7 +157,7 @@ export function InterviewPage() {
     {!role.data || !settings.data || (interviewId && !record.data) ?
       <LoadState error={role.error ?? settings.error ?? record.error} retry={() => {
         void role.refetch(); void settings.refetch(); if (interviewId) void record.refetch();
-      }} /> : !interviewId && role.data.stage === 'COMPLETED' ?
+      }} /> : !interviewId && role.data.status === 'COMPLETED' ?
         <p className="surface empty">Reopen this role to add an interview.</p> :
         <InterviewForm key={roleId + (interviewId ?? '')} roleId={roleId} interview={record.data} timeZone={settings.data.timeZone} />}
   </>;

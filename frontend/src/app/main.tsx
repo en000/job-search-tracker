@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { StrictMode, useLayoutEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, Link, Navigate, NavLink, Outlet, RouterProvider, useLocation, useRouteError } from 'react-router-dom';
@@ -6,10 +6,15 @@ import { NewRolePage } from '../features/roles/RoleForm';
 import { RolesPage } from '../features/roles/RolesPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { TodayPage } from '../features/today/TodayPage';
+import { queries } from '../shared/api';
 import './styles.css';
 
 function Shell() {
   const location = useLocation();
+  const settings = useQuery(queries.settings());
+  useLayoutEffect(() => {
+    document.documentElement.dataset.theme = (settings.data?.theme ?? 'LIGHT').toLowerCase();
+  }, [settings.data?.theme]);
   useLayoutEffect(() => {
     if (location.pathname !== '/roles') window.scrollTo(0, 0);
   }, [location.pathname]);

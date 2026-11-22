@@ -5,10 +5,10 @@ import { queries } from '../../shared/api';
 import { formatDate, formatInstant } from '../../shared/dates';
 import { label } from '../../shared/labels';
 import { returnState } from '../../shared/navigation';
-import { outcomeCodes, stageCodes, substageCodes } from '../../shared/types';
+import { outcomeCodes, statusCodes, stageCodes } from '../../shared/types';
 import { Field, formText, LoadState, PageHeading, Pagination, Pill, SelectField } from '../../shared/ui';
 
-const filters = ['q', 'stage', 'substage', 'outcome', 'sort'] as const;
+const filters = ['q', 'status', 'stage', 'outcome', 'sort'] as const;
 
 export function RolesPage() {
   const [params, setParams] = useSearchParams();
@@ -55,8 +55,8 @@ export function RolesPage() {
     <PageHeading title="Roles" />
     <form className="surface filters" onSubmit={submit} key={filterKey} role="search" aria-label="Filter roles">
       <Field name="q" label="Search" type="search" placeholder="Company or title" defaultValue={params.get('q') ?? ''} maxLength={200} />
+      <SelectField name="status" label="Status" options={statusCodes} empty="All statuses" defaultValue={params.get('status') ?? ''} />
       <SelectField name="stage" label="Stage" options={stageCodes} empty="All stages" defaultValue={params.get('stage') ?? ''} />
-      <SelectField name="substage" label="Substage" options={substageCodes} empty="All substages" defaultValue={params.get('substage') ?? ''} />
       <SelectField name="outcome" label="Outcome" options={outcomeCodes} empty="All outcomes" defaultValue={params.get('outcome') ?? ''} />
       <label className="field"><span>Sort by</span><select name="sort" defaultValue={params.get('sort') ?? 'recent'}>
         <option value="recent">Recent activity</option><option value="nextScheduled">Next scheduled</option>
@@ -83,8 +83,8 @@ export function RolesPage() {
                     sessionStorage.setItem('roles-scroll:' + location.pathname + location.search, String(window.scrollY));
                   }
                 }}>{role.title}</Link><div className="muted">{role.company}</div></td>
-              <td data-label="Status"><Pill code={role.stage} />
-                {(role.substage || role.outcome) && <div className="muted detail-label">{label((role.substage ?? role.outcome)!)}</div>}</td>
+              <td data-label="Status"><Pill code={role.status} />
+                {(role.stage || role.outcome) && <div className="muted detail-label">{label((role.stage ?? role.outcome)!)}</div>}</td>
               <td data-label="Next scheduled">{item ? <>
                 <div className="next-item">{item.label}</div>
                 <span className="muted">{label(item.kind)}</span>
